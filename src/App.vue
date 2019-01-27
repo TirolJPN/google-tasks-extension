@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <v-date-picker></v-date-picker>
+    <img src="./assets/logo.png">
+    <router-view></router-view>
   </div>
 </template>
 
