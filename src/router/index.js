@@ -1,30 +1,54 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import SignIn from '@/components/SignIn'
+import VueRouter from 'vue-router'
 import SignUp from '@/components/SignUp'
+import Home from '@/components/Home'
+import firebase from 'firebase'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+var Auth = {
+  loggedIn: false,
+  login: function() { this.loggedIn = true },
+  logout: function() { this.loggedIn = false }  
+}
+
+let router = new VueRouter({
   routes: [
     // for index page
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
-    // for sign up page
-    {
-      path: '/signup',
       name: 'SignUp',
       component: SignUp
     },
-    // for sign in page
+    // for sign up page
     {
-      path: '/signin',
-      name: 'SignIn',
-      component: SignIn
+      path: '/home',
+      name: 'Home',
+      component: Home,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
+
+// ログインが完了していない場合にサインインページの飛ばす
+router.beforeEach((to, from, next)=>{
+  let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  let currentUser = firebase.auth().currentUser　
+  if (requiresAuth){
+  if (!currentUser){
+    next({
+      path: '/'
+    })
+  }else{
+    next()
+  }
+}else{
+  next()
+}
+})
+
+
+
+export default router
