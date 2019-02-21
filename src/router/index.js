@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SignUp from '@/components/SignUp'
 import Home from '@/components/Home'
-import firebase from 'firebase'
 import VueGAPI from "vue-gapi"
 
 Vue.use(VueRouter)
@@ -43,8 +41,8 @@ let router = new VueRouter({
     // for index page
     {
       path: '/',
-      name: 'SignUp',
-      component: SignUp
+      name: 'Home',
+      component: Home
     }
   ]
 })
