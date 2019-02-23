@@ -1,13 +1,18 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <img class="title-logo" src="./assets/Google_Tasks_Logo.png">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data(){
+    return {
+      picker: null
+    }
+  }
 }
 </script>
 
@@ -20,4 +25,8 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+  .title-logo{
+    width: 200px;
+  }
 </style>
