@@ -1,10 +1,40 @@
 <template>
   <div class="button-list">
     <div v-if="isLogined">
-      <v-ons-button modifier="outline" class="button" v-on:click="logout">Log Out</v-ons-button>
-      <v-ons-button modifier="cta" class="button" v-on:click="printAllTasks">Confirm my Tasks</v-ons-button>
-      <ul v-for="task in tasks">
-        <li>{{task}}</li>
+      <v-ons-fab modifier="outline" class="button logout" v-on:click="logout">
+        <v-ons-icon icon="sign-out-alt"></v-ons-icon>
+      </v-ons-fab>
+
+      <v-ons-page>
+        <v-ons-toolbar>
+          <div class="left"><ons-toolbar-button @click="carouselIndex > 0 && carouselIndex--">
+            <v-ons-icon icon="angle-left"></v-ons-icon>
+          </ons-toolbar-button></div>
+          <div class="center">Google Tasks</div>
+          <div class="right"><ons-toolbar-button @click="carouselIndex < taskLists.length && carouselIndex++">
+            <v-ons-icon icon="angle-right"></v-ons-icon>
+          </ons-toolbar-button></div>
+        </v-ons-toolbar>
+
+        <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
+                        :index.sync="carouselIndex"
+        >
+          <v-ons-carousel-item v-for="taskList in taskLists" :style="{backgroundColor: '#085078'}">
+            <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff;">{{taskList}}</div>
+          </v-ons-carousel-item>
+        </v-ons-carousel>
+
+        <div :style="dots">
+      <span :index="dotIndex - 1" v-for="dotIndex in Object.keys(taskLists).length" :key="dotIndex" style="cursor: pointer" @click="carouselIndex = dotIndex - 1">
+        {{ carouselIndex === dotIndex - 1 ? '\u25CF' : '\u25CB' }}
+      </span>
+        </div>
+      </v-ons-page>
+
+
+      <ul v-for="taskList in taskLists">
+        <!--受け取ってきた全てのタスクをサブタスクごとyieldする-->
+        <li>{{taskList}}</li>
       </ul>
     </div>
     <div v-else>
@@ -20,45 +50,65 @@ export default {
   data: function() {
     return {
       isLogined: this.$isAuthenticated(),
-      tasks: []
+      taskLists: [],
+      carouselIndex: 0,
+      items: {
+        BLUE: '#085078',
+        DARK: '#373B44',
+        ORANGE: '#D38312'
+      },
+      dots: {
+        textAlign: 'center',
+        fontSize: '30px',
+        color: '#fff',
+        position: 'absolute',
+        bottom: '40px',
+        left: 0,
+        right: 0
+      }
     }
   },
-  // watch: {
-  //   isLogined: function (newIsLogined, oldIsLogined) {
-  //     this.isLogined = this.isAuthenticated()
-  //   }
-  // },
+  mounted() {
+    if (this.$isAuthenticated() === true) {
+      this.getTasksLists()
+    }
+  },
   methods: {
     login () {
+      let vueInstance = this
       if (this.$isAuthenticated() !== true) {
+        // ログイン処理と同時にタスクリストを読み込む.
         this.$login()
+          .then(function(){
+            if(vueInstance.taskLists.length === 0){
+              vueInstance.getTasksLists()
+            }
+        })
         this.isLogined = !this.isLogined
       }
     },
-
     logout () {
       this.$logout()
       this.isLogined = !this.isLogined
     },
 
-    printAllTasks() {
+    getTasksLists(){
       let vueInstance = this
-      this.$getGapiClient()
+      vueInstance.$getGapiClient()
         .then(function(gapi) {
           gapi.client.tasks.tasklists.list({
             'maxResults': 10
           }).then(function(response) {
-            alert((response.result.items))
             let taskLists = response.result.items;
             if (taskLists && taskLists.length > 0) {
               for (let i = 0; i < taskLists.length; i++) {
-                vueInstance.tasks.push(taskLists[i])
+                vueInstance.taskLists.push(taskLists[i])
                 // this.$set(this.tasks, i, taskLists[i]);
               }
             } else {
               alert('No task lists found.');
             }
-          });
+          })
         })
     }
   }
@@ -87,4 +137,13 @@ a {
 .button{
   margin: 6px 0;
 }
+.logout {
+  position: absolute;
+  z-index: 100;
+  right: 20px;
+  bottom: 20px;
+
+}
 </style>
+
+
