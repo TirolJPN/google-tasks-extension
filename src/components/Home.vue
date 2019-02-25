@@ -10,7 +10,7 @@
           <div class="left"><ons-toolbar-button @click="carouselIndex > 0 && carouselIndex--">
             <v-ons-icon icon="angle-left"></v-ons-icon>
           </ons-toolbar-button></div>
-          <div class="center">Google Tasks</div>
+          <div class="center">{{taskLists[carouselIndex].title}}</div>
           <div class="right"><ons-toolbar-button @click="carouselIndex < taskLists.length && carouselIndex++">
             <v-ons-icon icon="angle-right"></v-ons-icon>
           </ons-toolbar-button></div>
@@ -47,11 +47,6 @@ export default {
       isLogined: this.$isAuthenticated(),
       taskLists: [],
       carouselIndex: 0,
-      items: {
-        BLUE: '#085078',
-        DARK: '#373B44',
-        ORANGE: '#D38312'
-      },
       dots: {
         textAlign: 'center',
         fontSize: '30px',
