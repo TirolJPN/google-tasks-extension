@@ -3,8 +3,6 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-// import Vuetiry from "vuetify"
-// import 'vuetify/dist/vuetify.min.css'
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 

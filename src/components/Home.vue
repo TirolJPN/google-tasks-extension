@@ -17,10 +17,9 @@
         </v-ons-toolbar>
 
         <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
-                        :index.sync="carouselIndex"
-        >
+                        :index.sync="carouselIndex" >
           <v-ons-carousel-item v-for="taskList in taskLists" :style="{backgroundColor: '#085078'}">
-            <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff;">{{taskList}}</div>
+            <task-list :kind="taskList.kind" :id="taskList.id" :title="taskList.title" :updated="taskList.updated" :selflink="taskList.selflink"></task-list>
           </v-ons-carousel-item>
         </v-ons-carousel>
 
@@ -30,12 +29,6 @@
       </span>
         </div>
       </v-ons-page>
-
-
-      <ul v-for="taskList in taskLists">
-        <!--受け取ってきた全てのタスクをサブタスクごとyieldする-->
-        <li>{{taskList}}</li>
-      </ul>
     </div>
     <div v-else>
       <v-ons-button class="button" v-on:click="login">Login with GAuth</v-ons-button>
@@ -44,9 +37,11 @@
 </template>
 
 <script>
+import TaskList from './TaskList'
 
 export default {
   name: 'Home',
+  components: {TaskList},
   data: function() {
     return {
       isLogined: this.$isAuthenticated(),
