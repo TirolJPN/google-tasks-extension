@@ -1,9 +1,7 @@
 <template>
   <div class="card-list">
-    <!--<task></task>-->
     <div v-for="task in sortedTasks">
       <task :task="task"></task>
-      <!--{{task.position}}-->
       <br>
     </div>
   </div>
@@ -46,14 +44,14 @@
 
       mounted() {
         if (this.$isAuthenticated() === true) {
-          let vueInstance = this
+          const vueInstance = this
           this.getTasksLists()
         }
           // _.orderBy(this.tasks, ['position'], ['asc']);
       },
       methods: {
         getTasksLists(){
-          let vueInstance = this
+          const vueInstance = this
           vueInstance.$getGapiClient()
             .then(function(gapi) {
               gapi.client.tasks.tasks.list({

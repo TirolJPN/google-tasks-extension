@@ -1,17 +1,12 @@
 <template>
 
   <div>
-    <v-ons-card>
-      <v-ons-input float
-                   v-model="task.title"
-      >
+    <v-ons-card modifier="material">
+      <v-ons-input float v-model="task.title" modifier="material">
       </v-ons-input>
       <br>
-      <v-ons-input float
-                   v-model="task.notes"
-      >
+      <v-ons-input float v-model="task.notes" modifier="material">
       </v-ons-input>
-      <!--{{task}}-->
     </v-ons-card>
   </div>
 </template>

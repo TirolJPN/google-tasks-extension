@@ -1,18 +1,19 @@
 <template>
   <div class="main-page">
     <div v-if="isLogined">
-      <v-ons-fab modifier="outline" class="button logout" v-on:click="logout">
-        <v-ons-icon icon="sign-out-alt"></v-ons-icon>
+      <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
+        <v-ons-icon icon="sign-out-alt"  modifier="material"></v-ons-icon>
       </v-ons-fab>
 
       <v-ons-page
-        :style="{backgroundColor: '#085078'}">
+        :style="{backgroundColor: '#085078'}"
+        modifier="material">
         <v-ons-toolbar>
-          <div class="left"><ons-toolbar-button @click="carouselIndex > 0 && carouselIndex--">
+          <div class="left"><ons-toolbar-button @click="carouselIndex > 0 && carouselIndex--"  modifier="material">
             <v-ons-icon icon="angle-left"></v-ons-icon>
           </ons-toolbar-button></div>
           <div class="center">{{taskLists[carouselIndex].title}}</div>
-          <div class="right"><ons-toolbar-button @click="carouselIndex < taskLists.length && carouselIndex++">
+          <div class="right"><ons-toolbar-button @click="carouselIndex < taskLists.length && carouselIndex++"  modifier="material">
             <v-ons-icon icon="angle-right"></v-ons-icon>
           </ons-toolbar-button></div>
         </v-ons-toolbar>
@@ -20,8 +21,8 @@
         <!--<v-ons-carousel fullscreen swipeable auto-scroll overscrollable-->
                         <!--:index.sync="carouselIndex" >-->
         <v-ons-carousel swipeable auto-scroll overscrollable fullscreen
-                        :index.sync="carouselIndex">
-          <v-ons-carousel-item v-for="taskList in taskLists" :style="{backgroundColor: '#085078'}">
+                        :index.sync="carouselIndex"  modifier="material">
+          <v-ons-carousel-item v-for="taskList in sortedTaskLists" :style="{backgroundColor: '#085078'}"  modifier="material">
             <task-list :kind="taskList.kind" :id="taskList.id" :title="taskList.title" :updated="taskList.updated" :selflink="taskList.selflink"></task-list>
           </v-ons-carousel-item>
         </v-ons-carousel>
@@ -34,7 +35,7 @@
       </v-ons-page>
     </div>
     <div v-else>
-      <v-ons-button class="button" v-on:click="login">Login with GAuth</v-ons-button>
+      <v-ons-button class="button" v-on:click="login"  modifier="material">Login with GAuth</v-ons-button>
     </div>
   </div>
 </template>
@@ -68,7 +69,7 @@
     },
     methods: {
       login () {
-        let vueInstance = this
+        const vueInstance = this
         if (this.$isAuthenticated() !== true) {
           // ログイン処理と同時にタスクリストを読み込む.
           this.$login()
@@ -86,7 +87,7 @@
       },
 
       getTasksLists(){
-        let vueInstance = this
+        const vueInstance = this
         vueInstance.$getGapiClient()
           .then(function(gapi) {
             gapi.client.tasks.tasklists.list({
@@ -103,6 +104,15 @@
               }
             })
           })
+      }
+    },
+    computed: {
+      // position propertyで昇順でソートする
+      // tmplate中のv-forではこのsortedTaskを指定する
+      sortedTaskLists() {
+        return this.taskLists.sort((a, b) => {
+          return (Number(a.position) < Number(b.position)) ? -1 : (Number(a.position) > Number(b.position)) ? 1 : 0;
+        });
       }
     }
   }
