@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "firebase": "^5.8.1",
+    "loadsh": "0.0.3",
+    "lodash": "^4.17.11",
     "onsenui": "^2.10.6",
     "scriptjs": "^2.5.9",
     "vue": "^2.5.2",
