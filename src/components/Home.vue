@@ -69,13 +69,13 @@
     },
     methods: {
       login () {
-        const vueInstance = this
+        const self = this
         if (this.$isAuthenticated() !== true) {
           // ログイン処理と同時にタスクリストを読み込む.
           this.$login()
             .then(function(){
-              if(vueInstance.taskLists.length === 0){
-                vueInstance.getTasksLists()
+              if(self.taskLists.length === 0){
+                self.getTasksLists()
               }
           })
           this.isLogined = !this.isLogined
@@ -87,8 +87,8 @@
       },
 
       getTasksLists(){
-        const vueInstance = this
-        vueInstance.$getGapiClient()
+        const self = this
+        self.$getGapiClient()
           .then(function(gapi) {
             gapi.client.tasks.tasklists.list({
               'maxResults': 10
@@ -96,7 +96,7 @@
               let taskLists = response.result.items;
               if (taskLists && taskLists.length > 0) {
                 for (let i = 0; i < taskLists.length; i++) {
-                  vueInstance.taskLists.push(taskLists[i])
+                  self.taskLists.push(taskLists[i])
                   // this.$set(this.tasks, i, taskLists[i]);
                 }
               } else {

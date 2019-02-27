@@ -1,15 +1,13 @@
 <template>
   <div class="card-list">
     <div v-for="task in sortedTasks">
-      <task :task="task"></task>
-      <br>
+      <task :task="task" :subTasks="specificSubTasks(task.id)"></task>
     </div>
   </div>
 </template>
 
 <script>
   import Task from './Task'
-  import _ from 'lodash'
 
   export default {
       name: "TaskList",
@@ -38,35 +36,47 @@
         },
       data: function() {
         return {
-          tasks: []
+          tasks: [],
+
+          // parentがundefinedではない所謂サブタスク
+          subTasks: []
         }
       },
 
       mounted() {
         if (this.$isAuthenticated() === true) {
-          const vueInstance = this
+          const self = this
           this.getTasksLists()
         }
           // _.orderBy(this.tasks, ['position'], ['asc']);
       },
       methods: {
         getTasksLists(){
-          const vueInstance = this
-          vueInstance.$getGapiClient()
+          const self = this
+          self.$getGapiClient()
             .then(function(gapi) {
               gapi.client.tasks.tasks.list({
-                'tasklist': vueInstance.id
+                'tasklist': self.id
               }).then(function(response) {
                 let tasks = response.result.items;
                 if (tasks && tasks.length > 0) {
                   for (let i = 0; i < tasks.length; i++) {
-                    vueInstance.tasks.push(tasks[i])
+                    if (tasks[i].parent === undefined){
+                      self.tasks.push(tasks[i])
+                    }else{
+                      self.subTasks.push(tasks[i])
+                    }
                   }
                 } else {
                   alert('No task lists found.');
                 }
               })
             })
+        },
+        specificSubTasks(parentKey){
+          return this.subTasks.filter(function (element) {
+            return element.parent === parentKey;
+          })
         }
       },
     computed: {

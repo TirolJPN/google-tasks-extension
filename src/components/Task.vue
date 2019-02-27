@@ -7,6 +7,15 @@
       <br>
       <v-ons-input float v-model="task.notes" modifier="material">
       </v-ons-input>
+      <br>
+      <br>
+      <div v-for="subtask in subTasks" style="background-color: aliceblue; padding-left: 20px;">
+        <v-ons-input float v-model="subtask.title" modifier="material">
+        </v-ons-input>
+        <br>
+        <v-ons-input float v-model="subtask.notes" modifier="material">
+        </v-ons-input>
+      </div>
     </v-ons-card>
   </div>
 </template>
@@ -17,32 +26,14 @@
     export default {
         name: "Task",
         props:{
-          // "kind": String,
-          // "id": String,
-          // "etag": String,
-          // "title": String,
-          // "updated": data,
-          // "selfLink": String,
-          // "parent": String,
-          // "position": String,
-          // "notes": String,
-          // "status": String,
-          // "due": datetime,
-          // "completed": datetime,
-          // "deleted": Boolean,
-          // "hidden": Boolean,
-          // "links": [
-          //   {
-          //     "type": String,
-          //     "description": String,
-          //     "link": String
-          //   }
-          // ]
-          "task": Array
+          "task": {
+            type:Array,
+            required: true
+          },
+          "subTasks": Array
         },
       data: function () {
         return {
-          name: "joge"
         }
       }
     }
