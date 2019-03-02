@@ -3,8 +3,10 @@
   <div :style="noBottomLineStyle">
     <v-ons-card modifier="material">
       <div class="main-task">
-      <v-ons-checkbox float modifier="material" :style="cardCheckBoxPadding">
-      </v-ons-checkbox>
+        <div class="checkbox-padding">
+          <v-ons-checkbox float modifier="material">
+          </v-ons-checkbox>
+        </div>
         <div class="inline-block">
           <v-ons-input v-model="task.title" modifier="material" placeholder="タスク名">
           </v-ons-input>
@@ -16,8 +18,10 @@
 
       <div v-for="subtask in subTasks" class="subtask-card">
         <div class="sub-task">
-          <v-ons-checkbox float modifier="material"  :style="cardCheckBoxPadding">
-          </v-ons-checkbox>
+          <div class="checkbox-padding">
+            <v-ons-checkbox float modifier="material">
+            </v-ons-checkbox>
+          </div>
           <div class="inline-block">
             <v-ons-input v-model="subtask.title" modifier="material" placeholder="タスク名">
             </v-ons-input>
@@ -64,13 +68,17 @@
 
   .sub-task{
     padding: 5px 0;
+
+  }
+
+  .checkbox-padding{
+    display: inline-block;
+    padding: 0 5px 0 10px;
   }
 
   .subtask-card{
     background-color: gainsboro;
-    margin-bottom: 5px;
     padding-left: 20px;
-    padding-right: 20px;
   }
 
   .inline-block{
