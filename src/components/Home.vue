@@ -6,7 +6,7 @@
       </v-ons-fab>
 
       <v-ons-page
-        :style="{backgroundColor: '#085078'}"
+        :style="bg"
         modifier="material">
         <v-ons-toolbar>
           <div class="left"><ons-toolbar-button @click="carouselIndex > 0 && carouselIndex--"  modifier="material">
@@ -22,7 +22,7 @@
                         <!--:index.sync="carouselIndex" >-->
         <v-ons-carousel swipeable auto-scroll overscrollable fullscreen
                         :index.sync="carouselIndex"  modifier="material">
-          <v-ons-carousel-item v-for="taskList in sortedTaskLists" :style="{backgroundColor: '#085078'}"  modifier="material">
+          <v-ons-carousel-item v-for="taskList in sortedTaskLists" :style="bg"  modifier="material">
             <task-list :kind="taskList.kind" :id="taskList.id" :title="taskList.title" :updated="taskList.updated" :selflink="taskList.selflink"></task-list>
           </v-ons-carousel-item>
         </v-ons-carousel>
@@ -59,7 +59,10 @@
           bottom: '40px',
           left: 0,
           right: 0
-        }
+        },
+        bg: {backgroundColor: '#085078'}
+
+
       }
     },
     mounted() {
