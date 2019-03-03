@@ -8,10 +8,10 @@
           </v-ons-checkbox>
         </div>
         <div class="inline-block">
-          <v-ons-input v-model="task.title" modifier="material" placeholder="タスク名">
+          <v-ons-input v-model="task.title" v-on:keyup.enter="updateTask(task.id)" modifier="material" placeholder="タスク名">
           </v-ons-input>
           <br>
-          <v-ons-input v-model="task.notes" modifier="material" placeholder="詳細を追加">
+          <v-ons-input v-model="task.notes" v-on:keyup.enter="updateTask(task.id)" modifier="material" placeholder="詳細を追加">
           </v-ons-input>
         </div>
       </div>
@@ -23,10 +23,10 @@
             </v-ons-checkbox>
           </div>
           <div class="inline-block">
-            <v-ons-input v-model="subtask.title" modifier="material" placeholder="タスク名">
+            <v-ons-input v-model="subtask.title" v-on:keyup.enter="updateTask(subtask.id)" modifier="material" placeholder="タスク名">
             </v-ons-input>
             <br>
-            <v-ons-input v-model="subtask.notes" modifier="material" placeholder="詳細を追加">
+            <v-ons-input v-model="subtask.notes" v-on:keyup.enter="updateTask(subtask.id)" modifier="material" placeholder="詳細を追加">
             </v-ons-input>
           </div>
         </div>
@@ -41,6 +41,10 @@
     export default {
         name: "Task",
         props:{
+          "taskList":{
+            type: String,
+            required: true
+          },
           "task": {
             type:Array,
             required: true
@@ -57,6 +61,27 @@
             padding: '18px 7px 0 0'
           }
         }
+      },
+      methods: {
+        updateTask: function(taskID){
+          // console.log(JSON.stringify(this.task))
+          const self = this
+          self.$getGapiClient()
+            .then(function(gapi) {
+              let parameter = JSON.stringify(self.task)
+              console.log(parameter)
+              gapi.client.tasks.tasks.update(
+                {'task': taskID,
+                 'tasklist': self.taskList
+                },
+                parameter
+              ).then(function(response) {
+                // let task = response.result.items
+                console.log(response)
+              })
+            })
+        }
+
       }
     }
 </script>

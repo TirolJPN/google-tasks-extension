@@ -1,7 +1,7 @@
 <template>
   <div class="card-list">
     <div v-for="task in sortedTasks">
-      <task :task="task" :subTasks="specificSubTasks(task.id)"></task>
+      <task :task="task" :subTasks="specificSubTasks(task.id)"  :taskList="id"></task>
     </div>
   </div>
 </template>
@@ -48,7 +48,6 @@
           const self = this
           this.getTasksLists()
         }
-          // _.orderBy(this.tasks, ['position'], ['asc']);
       },
       methods: {
         getTasksLists(){
