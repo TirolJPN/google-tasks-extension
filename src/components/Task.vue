@@ -4,7 +4,7 @@
     <v-ons-card modifier="material">
       <div class="main-task">
         <div class="checkbox-padding">
-          <v-ons-checkbox float modifier="material">
+          <v-ons-checkbox float modifier="material" v-on:change="completeTask(task)">
           </v-ons-checkbox>
         </div>
         <div class="inline-block">
@@ -19,7 +19,7 @@
       <div v-for="subtask in subTasks" class="subtask-card">
         <div class="sub-task">
           <div class="checkbox-padding">
-            <v-ons-checkbox float modifier="material">
+            <v-ons-checkbox float modifier="material" v-on:change="completeTask(subtask)">
             </v-ons-checkbox>
           </div>
           <div class="inline-block">
@@ -64,12 +64,10 @@
       },
       methods: {
         updateTask: function(taskID){
-          // console.log(JSON.stringify(this.task))
           const self = this
           self.$getGapiClient()
             .then(function(gapi) {
               let parameter = JSON.stringify(self.task)
-              console.log(parameter)
               gapi.client.tasks.tasks.update(
                 {'task': taskID,
                  'tasklist': self.taskList
@@ -80,8 +78,23 @@
                 console.log(response)
               })
             })
+        },
+        completeTask(task){
+          const self = this
+          self.$getGapiClient()
+            .then(function(gapi) {
+              task.status = 'completed'
+              gapi.client.tasks.tasks.update(
+                {'task': task.id,
+                  'tasklist': self.taskList,
+                },
+                JSON.stringify(task)
+              ).then(function(response) {
+                // let task = response.result.items
+                console.log(response)
+              })
+            })
         }
-
       }
     }
 </script>
