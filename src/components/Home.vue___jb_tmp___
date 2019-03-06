@@ -6,8 +6,8 @@
       </v-ons-fab>
 
 
-      <v-ons-fab modifier="outline material" class="button plus-square" v-on:click="logout">
-        <v-ons-icon icon="plus-square"  modifier="material"></v-ons-icon>
+      <v-ons-fab modifier="outline material" class="button plus" v-on:click="logout">
+        <v-ons-icon icon="plus"  modifier="material"></v-ons-icon>
       </v-ons-fab>
 
 
