@@ -1,14 +1,42 @@
 <template>
   <div class="main-page">
+    <list-add  v-if="showModal" @close="showModal = false"></list-add>
     <div v-if="isLogined">
+
       <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
         <v-ons-icon icon="sign-out-alt"  modifier="material"></v-ons-icon>
       </v-ons-fab>
 
+      <transition name="list-core">
+        <v-ons-fab modifier="outline material" class="button list" v-on:click="isPushedListButton = !isPushedListButton">
+          <v-ons-icon v-bind:icon="listIcon"  modifier="material"></v-ons-icon>
+        </v-ons-fab>
+      </transition>
 
-      <v-ons-fab modifier="outline material" class="button plus-square" v-on:click="logout">
-        <v-ons-icon icon="plus-square"  modifier="material"></v-ons-icon>
-      </v-ons-fab>
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-add" @click="showModal = true">
+            <v-ons-icon icon="plus" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-edit">
+            <v-ons-icon icon="edit" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-trash">
+            <v-ons-icon icon="trash-alt" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
 
 
       <v-ons-page
@@ -48,14 +76,19 @@
 
 <script>
   import TaskList from './TaskList'
+  import ListAdd from "./ListAdd";
 
   export default {
     name: 'Home',
-    components: {TaskList},
+    components: {ListAdd, TaskList},
     data: function() {
       return {
         isLogined: this.$isAuthenticated(),
         taskLists: [],
+        isPushedListButton: false,
+        showModal: false,
+
+        // for display parameter
         carouselIndex: 0,
         dots: {
           textAlign: 'center',
@@ -122,6 +155,13 @@
         return this.taskLists.sort((a, b) => {
           return (Number(a.position) < Number(b.position)) ? -1 : (Number(a.position) > Number(b.position)) ? 1 : 0;
         });
+      },
+      listIcon: function(){
+        if (this.isPushedListButton !== true){
+          return "list"
+        }else{
+          return "times"
+        }
       }
     }
   }
@@ -155,12 +195,37 @@ a {
   right: 20px;
   bottom: 20px;
 }
-.plus{
+.list{
   position: absolute;
   z-index: 100;
-  right: 60px;
-  bottom: 50px;
+  right: 20px;
+  bottom: 90px;
 }
+
+.list-add {
+  right: 90px;
+  bottom: 230px;
+}
+
+.list-edit {
+  right: 90px;
+  bottom: 160px;
+}
+
+.list-trash {
+  right: 90px;
+  bottom: 90px;
+}
+
+
+.list-fade-enter-active, .list-fade-leave-active {
+  transition: opacity .01s
+}
+.list-fade-enter, .list-fade-leave {
+  opacity: 0
+}
+
+
 .main-page{
   position: center;
 }
