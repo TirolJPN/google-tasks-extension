@@ -1,7 +1,9 @@
 <template>
   <div class="main-page">
-    <list-add  v-if="showModal" @close="showModal = false"></list-add>
     <div v-if="isLogined">
+      <list-add  v-if="showListAddModal" @close="showListAddModal = false"></list-add>
+      <list-edit  v-if="showListEditModal" @close="showListEditModal = false"></list-edit>
+      <list-delete  v-if="showListDeleteModal" @close="showListDeleteModal = false"></list-delete>
 
       <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
         <v-ons-icon icon="sign-out-alt"  modifier="material"></v-ons-icon>
@@ -16,7 +18,7 @@
 
       <transition name="list-fade">
         <div v-if="isPushedListButton">
-          <v-ons-fab modifier="outline material" class="button list list-add" @click="showModal = true">
+          <v-ons-fab modifier="outline material" class="button list list-add" @click="showListAddModal = true">
             <v-ons-icon icon="plus" modifier="material"></v-ons-icon>
           </v-ons-fab>
         </div>
@@ -24,7 +26,7 @@
 
       <transition name="list-fade">
         <div v-if="isPushedListButton">
-          <v-ons-fab modifier="outline material" class="button list list-edit">
+          <v-ons-fab modifier="outline material" class="button list list-edit" @click="showListEditModal = true">
             <v-ons-icon icon="edit" modifier="material"></v-ons-icon>
           </v-ons-fab>
         </div>
@@ -32,7 +34,7 @@
 
       <transition name="list-fade">
         <div v-if="isPushedListButton">
-          <v-ons-fab modifier="outline material" class="button list list-trash">
+          <v-ons-fab modifier="outline material" class="button list list-trash"  @click="showListDeleteModal = true">
             <v-ons-icon icon="trash-alt" modifier="material"></v-ons-icon>
           </v-ons-fab>
         </div>
@@ -77,16 +79,23 @@
 <script>
   import TaskList from './TaskList'
   import ListAdd from "./ListAdd";
+  import ListEdit from "./ListEdit";
+  import ListDelete from "./ListDelete";
 
   export default {
     name: 'Home',
-    components: {ListAdd, TaskList},
+    components: {ListAdd, TaskList, ListEdit, ListDelete},
     data: function() {
       return {
         isLogined: this.$isAuthenticated(),
         taskLists: [],
         isPushedListButton: false,
-        showModal: false,
+        // for Modal to add Task List
+        showListAddModal: false,
+        // for Modal to edit Task List
+        showListEditModal: false,
+        // for Modal to delete add Task List
+        showListDeleteModal: false,
 
         // for display parameter
         carouselIndex: 0,
