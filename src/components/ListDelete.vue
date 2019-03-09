@@ -6,17 +6,17 @@
         <div class="modal-wrapper">
           <div class="modal-container">
 
-            <v-ons-input placeholder="Task List name" float v-model="name" modifier="material">
+            <v-ons-input placeholder="Task List name" float v-model="TaskListName" modifier="material">
             </v-ons-input>
 
             <div class="modal-footer">
               <slot name="footer">
                 <!--default footer-->
                 <!--<button class="modal-default-button" @click="$emit('close')">-->
-                  <!--OK-->
+                <!--OK-->
                 <!--</button>-->
                 <v-ons-button id="show-modal" class="button" @click="$emit('close')" modifier="material--flat">cancel</v-ons-button>
-                <v-ons-button class="button" v-on:click="login"  modifier="material">Add Task List</v-ons-button>
+                <v-ons-button class="button" @click=""  modifier="material">Edit Task List Name</v-ons-button>
               </slot>
             </div>
           </div>
@@ -36,13 +36,22 @@
 </template>
 
 <script>
-    export default {
-      name: "ListDelete",
-      data: {
-        showModal: true,
-        name: ""
+  export default {
+    name: "ListEdit",
+    props:{
+      TaskListName: {
+        type: String,
+        required: true
+      }
+    },
+    data: {
+      function(){
+        return {
+          showModal: true
+        }
       }
     }
+  }
 </script>
 
 <style scoped>

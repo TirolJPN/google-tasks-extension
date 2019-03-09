@@ -6,7 +6,7 @@
         <div class="modal-wrapper">
           <div class="modal-container">
 
-            <v-ons-input placeholder="Task List name" float v-model="name" modifier="material">
+            <v-ons-input v-bind:placeholder="TaskListFormPlaceHolder" float v-model="TaskListName" modifier="material">
             </v-ons-input>
 
             <div class="modal-footer">
@@ -16,7 +16,7 @@
                   <!--OK-->
                 <!--</button>-->
                 <v-ons-button id="show-modal" class="button" @click="$emit('close')" modifier="material--flat">cancel</v-ons-button>
-                <v-ons-button class="button" v-on:click="login"  modifier="material">Add Task List</v-ons-button>
+                <v-ons-button class="button" @click="addNewTaskList" modifier="material">Add task list</v-ons-button>
               </slot>
             </div>
           </div>
@@ -38,9 +38,36 @@
 <script>
     export default {
       name: "ListAdd",
-      data: {
-        showModal: true,
-        name: ""
+      data: function(){
+        return {
+          showModal: true,
+          TaskListName: "",
+          TaskListFormPlaceHolder: "Add Task List"
+        }
+      }
+      ,
+      methods: {
+        // ADD TASK LISTが入力されたらリスト名が空でない限り，タスクリストを新規追加
+        addNewTaskList: function(){
+          const self = this
+          // TaskListNameが空かどうかのバリデーション
+          if(!this.TaskListName){
+            this.TaskListFormPlaceHolder = "Name cannot be empty"
+          // そうでなければAPI呼び出し
+          }else{
+            self.$getGapiClient()
+              .then(function(gapi) {
+                gapi.client.tasks.tasklists.insert({
+                  'title': self.TaskListName
+                }).then(function(response) {
+
+                  alert('Added new task list');
+                  self.$emit('close')
+
+                })
+              })
+          }
+        }
       }
     }
 </script>

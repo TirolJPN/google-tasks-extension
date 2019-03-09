@@ -2,7 +2,7 @@
   <div class="main-page">
     <div v-if="isLogined">
       <list-add  v-if="showListAddModal" @close="showListAddModal = false"></list-add>
-      <list-edit  v-if="showListEditModal" @close="showListEditModal = false"></list-edit>
+      <list-edit  v-if="showListEditModal" @close="showListEditModal = false" :TaskListName="taskLists[carouselIndex].title"></list-edit>
       <list-delete  v-if="showListDeleteModal" @close="showListDeleteModal = false"></list-delete>
 
       <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
@@ -165,6 +165,7 @@
           return (Number(a.position) < Number(b.position)) ? -1 : (Number(a.position) > Number(b.position)) ? 1 : 0;
         });
       },
+
       listIcon: function(){
         if (this.isPushedListButton !== true){
           return "list"
