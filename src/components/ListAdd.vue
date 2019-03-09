@@ -61,7 +61,10 @@
                   'title': self.TaskListName
                 }).then(function(response) {
 
-                  alert('Added new task list');
+                  // tasklistにappendするイベントを起こす
+                  self.$emit('modalEvent', response)
+
+                  // モーダルを閉じるイベントを起こす
                   self.$emit('close')
 
                 })

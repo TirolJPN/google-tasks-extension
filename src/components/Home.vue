@@ -1,7 +1,7 @@
 <template>
   <div class="main-page">
     <div v-if="isLogined">
-      <list-add  v-if="showListAddModal" @close="showListAddModal = false"></list-add>
+      <list-add  v-if="showListAddModal" @close="showListAddModal = false" v-on:modalEvent="addNewTaskList"></list-add>
       <list-edit  v-if="showListEditModal" @close="showListEditModal = false" :TaskListName="taskLists[carouselIndex].title"></list-edit>
       <list-delete  v-if="showListDeleteModal" @close="showListDeleteModal = false"></list-delete>
 
@@ -58,7 +58,7 @@
                         <!--:index.sync="carouselIndex" >-->
         <v-ons-carousel swipeable auto-scroll overscrollable fullscreen
                         :index.sync="carouselIndex"  modifier="material">
-          <v-ons-carousel-item v-for="taskList in sortedTaskLists" :style="bg"  modifier="material">
+          <v-ons-carousel-item v-for="taskList in taskLists" :style="bg"  modifier="material">
             <task-list :kind="taskList.kind" :id="taskList.id" :title="taskList.title" :updated="taskList.updated" :selflink="taskList.selflink"></task-list>
           </v-ons-carousel-item>
         </v-ons-carousel>
@@ -151,10 +151,13 @@
                   // this.$set(this.tasks, i, taskLists[i]);
                 }
               } else {
-                alert('No task lists found.');
+                console.log('No task lists found.');
               }
             })
           })
+      },
+      addNewTaskList: function (response) {
+        this.taskLists.push(JSON.stringify(response.result))
       }
     },
     computed: {
