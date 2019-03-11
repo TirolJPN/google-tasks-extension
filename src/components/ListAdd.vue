@@ -44,8 +44,7 @@
           TaskListName: "",
           TaskListFormPlaceHolder: "Add Task List"
         }
-      }
-      ,
+      },
       methods: {
         // ADD TASK LISTが入力されたらリスト名が空でない限り，タスクリストを新規追加
         addNewTaskList: function(){

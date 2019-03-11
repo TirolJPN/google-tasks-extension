@@ -2,7 +2,7 @@
   <div class="main-page">
     <div v-if="isLogined">
       <list-add  v-if="showListAddModal" @close="showListAddModal = false" v-on:modalEvent="addNewTaskList"></list-add>
-      <list-edit  v-if="showListEditModal" @close="showListEditModal = false" :TaskListName="taskLists[carouselIndex].title"></list-edit>
+      <list-edit  v-if="showListEditModal" @close="showListEditModal = false" :TaskListIdentifier="taskLists[carouselIndex].id" :TaskListName="taskLists[carouselIndex].title" v-on:modalEvent="editTaskList"></list-edit>
       <list-delete  v-if="showListDeleteModal" @close="showListDeleteModal = false" :TaskListIdentifier="taskLists[carouselIndex].id" v-on:modalEvent="deleteTaskList"></list-delete>
 
       <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
@@ -157,6 +157,14 @@
           })
       },
       addNewTaskList: function (response) {
+        this.taskLists.push(JSON.stringify(response.result))
+      },
+      editTaskList: function (taskListID, response) {
+        const tmpTaskLists = this.taskLists.filter(function(item, index){
+          if(item.id !== taskListID) return true
+        })
+
+        this.taskLists = tmpTaskLists
         this.taskLists.push(JSON.stringify(response.result))
       },
       deleteTaskList: function(taskListID) {

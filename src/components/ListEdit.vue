@@ -6,7 +6,7 @@
         <div class="modal-wrapper">
           <div class="modal-container">
 
-            <v-ons-input placeholder="Task List name" float v-model="TaskListName" modifier="material">
+            <v-ons-input v-bind:placeholder="TaskListFormPlaceHolder" float v-model="TaskListName" modifier="material">
             </v-ons-input>
 
             <div class="modal-footer">
@@ -16,7 +16,7 @@
                   <!--OK-->
                 <!--</button>-->
                 <v-ons-button id="show-modal" class="button" @click="$emit('close')" modifier="material--flat">cancel</v-ons-button>
-                <v-ons-button class="button" @click=""  modifier="material">Edit Task List Name</v-ons-button>
+                <v-ons-button class="button" @click="EditTaskList"  modifier="material">Edit Task List Name</v-ons-button>
               </slot>
             </div>
           </div>
@@ -39,6 +39,10 @@
     export default {
       name: "ListEdit",
       props:{
+        TaskListIdentifier: {
+          type: String,
+          required: true
+        },
         TaskListName: {
           type: String,
           required: true
@@ -47,7 +51,35 @@
       data: {
         function(){
           return {
-            showModal: true
+            showModal: true,
+            TaskListFormPlaceHolder: "Edit Task List"
+          }
+        }
+      },
+      methods: {
+        // ADD TASK LISTが入力されたらリスト名が空でない限り，タスクリストを新規追加
+        editTaskList: function(){
+          const self = this
+          // TaskListNameが空かどうかのバリデーション
+          if(!this.TaskListName){
+            this.TaskListFormPlaceHolder = "Name cannot be empty"
+            // そうでなければAPI呼び出し
+          }else{
+            self.$getGapiClient()
+              .then(function(gapi) {
+                gapi.client.tasks.tasklists.insert({
+                  'tasklist': self.TaskListIdentifier,
+                  'title': self.TaskListName
+                }).then(function(response) {
+
+                  // tasklistにappendするイベントを起こす
+                  self.$emit('modalEvent', self.TaskListIdentifier, response)
+
+                  // モーダルを閉じるイベントを起こす
+                  self.$emit('close')
+
+                })
+              })
           }
         }
       }
