@@ -1,9 +1,45 @@
 <template>
   <div class="main-page">
     <div v-if="isLogined">
+      <list-add  v-if="showListAddModal" @close="showListAddModal = false" v-on:modalEvent="addNewTaskList"></list-add>
+      <list-edit  v-if="showListEditModal" @close="showListEditModal = false" :TaskListIdentifier="taskLists[carouselIndex].id" :TaskListName="taskLists[carouselIndex].title" v-on:modalEvent="editTaskList"></list-edit>
+      <list-delete  v-if="showListDeleteModal" @close="showListDeleteModal = false" :TaskListIdentifier="taskLists[carouselIndex].id" v-on:modalEvent="deleteTaskList"></list-delete>
+
       <v-ons-fab modifier="outline material" class="button logout" v-on:click="logout">
         <v-ons-icon icon="sign-out-alt"  modifier="material"></v-ons-icon>
       </v-ons-fab>
+
+      <transition name="list-core">
+        <v-ons-fab modifier="outline material" class="button list" v-on:click="isPushedListButton = !isPushedListButton">
+          <v-ons-icon v-bind:icon="listIcon"  modifier="material"></v-ons-icon>
+        </v-ons-fab>
+      </transition>
+
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-add" @click="showListAddModal = true">
+            <v-ons-icon icon="plus" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-edit" @click="showListEditModal = true">
+            <v-ons-icon icon="edit" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
+
+      <transition name="list-fade">
+        <div v-if="isPushedListButton">
+          <v-ons-fab modifier="outline material" class="button list list-trash"  @click="showListDeleteModal = true">
+            <v-ons-icon icon="trash-alt" modifier="material"></v-ons-icon>
+          </v-ons-fab>
+        </div>
+      </transition>
+
 
       <v-ons-page
         :style="bg"
@@ -22,7 +58,7 @@
                         <!--:index.sync="carouselIndex" >-->
         <v-ons-carousel swipeable auto-scroll overscrollable fullscreen
                         :index.sync="carouselIndex"  modifier="material">
-          <v-ons-carousel-item v-for="taskList in sortedTaskLists" :style="bg"  modifier="material">
+          <v-ons-carousel-item v-for="taskList in taskLists" :style="bg"  modifier="material">
             <task-list :kind="taskList.kind" :id="taskList.id" :title="taskList.title" :updated="taskList.updated" :selflink="taskList.selflink"></task-list>
           </v-ons-carousel-item>
         </v-ons-carousel>
@@ -42,14 +78,26 @@
 
 <script>
   import TaskList from './TaskList'
+  import ListAdd from "./ListAdd";
+  import ListEdit from "./ListEdit";
+  import ListDelete from "./ListDelete";
 
   export default {
     name: 'Home',
-    components: {TaskList},
+    components: {ListAdd, TaskList, ListEdit, ListDelete},
     data: function() {
       return {
         isLogined: this.$isAuthenticated(),
         taskLists: [],
+        isPushedListButton: false,
+        // for Modal to add Task List
+        showListAddModal: false,
+        // for Modal to edit Task List
+        showListEditModal: false,
+        // for Modal to delete add Task List
+        showListDeleteModal: false,
+
+        // for display parameter
         carouselIndex: 0,
         dots: {
           textAlign: 'center',
@@ -103,10 +151,28 @@
                   // this.$set(this.tasks, i, taskLists[i]);
                 }
               } else {
-                alert('No task lists found.');
+                console.log('No task lists found.');
               }
             })
           })
+      },
+      addNewTaskList: function (response) {
+        this.taskLists.push(JSON.stringify(response.result))
+      },
+      editTaskList: function (taskListID, response) {
+        const tmpTaskLists = this.taskLists.filter(function(item, index){
+          if(item.id !== taskListID) return true
+        })
+
+        this.taskLists = tmpTaskLists
+        this.taskLists.push(JSON.stringify(response.result))
+      },
+      deleteTaskList: function(taskListID) {
+        const tmpTaskLists = this.taskLists.filter(function(item, index){
+          if(item.id !== taskListID) return true
+        })
+
+        this.taskLists = tmpTaskLists
       }
     },
     computed: {
@@ -116,6 +182,14 @@
         return this.taskLists.sort((a, b) => {
           return (Number(a.position) < Number(b.position)) ? -1 : (Number(a.position) > Number(b.position)) ? 1 : 0;
         });
+      },
+
+      listIcon: function(){
+        if (this.isPushedListButton !== true){
+          return "list"
+        }else{
+          return "times"
+        }
       }
     }
   }
@@ -148,8 +222,38 @@ a {
   z-index: 100;
   right: 20px;
   bottom: 20px;
-
 }
+.list{
+  position: absolute;
+  z-index: 100;
+  right: 20px;
+  bottom: 90px;
+}
+
+.list-add {
+  right: 90px;
+  bottom: 230px;
+}
+
+.list-edit {
+  right: 90px;
+  bottom: 160px;
+}
+
+.list-trash {
+  right: 90px;
+  bottom: 90px;
+}
+
+
+.list-fade-enter-active, .list-fade-leave-active {
+  transition: opacity .01s
+}
+.list-fade-enter, .list-fade-leave {
+  opacity: 0
+}
+
+
 .main-page{
   position: center;
 }

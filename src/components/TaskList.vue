@@ -67,7 +67,7 @@
                     }
                   }
                 } else {
-                  alert('No task lists found.');
+                  console.log('No task lists found.');
                 }
               })
             })
