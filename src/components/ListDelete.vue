@@ -6,8 +6,7 @@
         <div class="modal-wrapper">
           <div class="modal-container">
 
-            <v-ons-input placeholder="Task List name" float v-model="TaskListName" modifier="material">
-            </v-ons-input>
+            <div class="center">Delete tasks may also delete included tasks</div>
 
             <div class="modal-footer">
               <slot name="footer">
@@ -16,7 +15,7 @@
                 <!--OK-->
                 <!--</button>-->
                 <v-ons-button id="show-modal" class="button" @click="$emit('close')" modifier="material--flat">cancel</v-ons-button>
-                <v-ons-button class="button" @click=""  modifier="material">Edit Task List Name</v-ons-button>
+                <v-ons-button class="button" @click="deleteTaskList"  modifier="material">Delete Task List</v-ons-button>
               </slot>
             </div>
           </div>
@@ -39,7 +38,7 @@
   export default {
     name: "ListEdit",
     props:{
-      TaskListName: {
+      TaskListIdentifier: {
         type: String,
         required: true
       }
@@ -49,6 +48,25 @@
         return {
           showModal: true
         }
+      }
+    },
+    methods: {
+      // ADD TASK LISTが入力されたらリスト名が空でない限り，タスクリストを新規追加
+      deleteTaskList: function(){
+        const self = this
+        self.$getGapiClient()
+          .then(function(gapi) {
+            gapi.client.tasks.tasklists.delete({
+              'tasklist': self.TaskListIdentifier
+            }).then(function(response) {
+
+              // tasklistを更新するイベントを起こす
+              self.$emit('modalEvent', self.TaskListIdentifier)
+
+              // モーダルを閉じるイベントを起こす
+              self.$emit('close')
+            })
+          })
       }
     }
   }
